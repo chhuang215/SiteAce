@@ -1,0 +1,188 @@
+<head>
+  <title>siteace</title>
+</head>
+
+<body>
+	
+	
+</body>
+
+<template name="ApplicationLayout">
+    {{> yield "navbar"}}
+    {{> yield "main"}}
+</template>
+
+
+<template name="navbar">
+    <!-- navbar  - you will be putting the login functions here -->
+	<nav class="navbar navbar-default">
+	  <div class="container-fluid">
+	    <div class="navbar-header">
+	      <a class="navbar-brand" href="/">
+	        Site Ace
+	      </a>
+	    </div>
+        <p class="navbar-text navbar-right">{{>loginButtons align="right"}}</p>
+                  
+        <form class="navbar-form navbar-left js-nav-search">
+            <div class="input-group">
+
+                <input type="text" id="search" name="search" class="form-control" placeholder="Search">
+                <span class="input-group-btn"><button type="submit" class="btn btn-info">Search</button></span>
+            </div>
+     
+        </form>
+        <span class="navbar-text" id="clear"></span>
+	  </div>
+	</nav>
+</template>
+
+<template name="website_form">
+    {{#if currentUser}}
+	<a class="btn btn-default js-toggle-website-form" href="#">
+  		<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>Add Website
+	</a>
+    
+    
+	<div id="website_form" class="hidden_div">
+		<form class="js-save-website-form">
+		  <div class="form-group">
+		    <label for="url">Site address</label>
+		    <input type="text" class="form-control" id="url" placeholder="http://www.mysite.com">
+		  </div>
+		  <div class="form-group">
+		    <label for="title">Title (Optional)</label>
+		    <input type="text" class="form-control" id="title" placeholder="e.g. Google, Facebook, etc.">
+		  </div>
+		    <div class="form-group">
+		    <label for="description">Description (Optional)</label>
+		    <input type="text" class="form-control" id="description" placeholder="This site is for ...">
+		  </div>
+
+            <button type="submit" class="btn btn-default">Submit</button><span id="err"></span>
+		</form>
+	</div>
+    {{/if}}
+</template>
+
+<template name="recommended">
+    <h3>Recommanded for you</h3>
+    <ul>
+        {{#each recommendedWebsites}}
+                              
+        <li>
+            <a href="/website/{{_id}}">{{title}}</a>            
+        </li>
+        
+        {{/each}}
+    </ul>
+</template>
+
+<!-- template that displays several website items -->
+<template name="website_list">
+    <div class="container">
+        {{> website_form}}
+        
+        <div class="row">
+        
+            <div class="col-xs-9">
+                <ol class="list-group">
+                    {{#each websites}}
+                    {{>website_item}}
+                    {{/each}}
+                </ol>
+            </div>
+            
+            {{#if currentUser}}
+            <div class="col-xs-3">
+                {{>recommended}}
+            </div>
+            {{/if}}
+            
+        </div>
+        
+        
+    </div>
+</template>
+
+<!-- template that displays individual website entries -->
+<template name="website_item">
+<li class="list-group-item">
+    
+    <h4 class="list-group-item-heading">
+        <a href="{{url}}">{{title}}</a> 
+        <a href="/website/{{_id}}" class="btn btn-success btn-xs">
+		  <span aria-hidden="true">More</span>
+	   </a>
+    </h4>
+	
+	<p class="list-group-item-text">
+		{{description}}
+	</p>
+    <br>
+    <div>
+        <a href="#" class="btn btn-default btn-sm js-upvote">
+            <span class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span>
+        </a>{{up}}
+        <a href="#" class="btn btn-default btn-sm js-downvote">
+            <span class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span>
+        </a>{{down}}
+    </div>
+    <br>
+    <div class="timestamp">
+        <p>{{formatDate createdOn}}
+        <br>Created by: {{getOP createdBy}}</p>
+    </div>
+    
+
+</li>
+</template>
+
+<!-- Website detail template -->
+<template name="website_detail">
+    <div class="container">
+        
+        <a href="/"><span class="glyphicon glyphicon-arrow-left"></span>Go back</a>
+        <div class="jumbotron">
+            <h2><a href="{{url}}">{{title}}</a></h2>
+            <p>{{description}}</p>
+            
+            <div class="timestamp">
+                <p>{{formatDate createdOn}}
+                <br>Created by: {{getOP createdBy}}</p>
+            </div>
+        
+        </div>
+        
+        <br>
+        <div>
+            {{#if currentUser}}
+                <form class="js-post-comment" >
+                    <div class="row">
+                        <div class="form-group col-sm-10 col-xs-11">
+                            <textarea class="form-control" rows="2" id="aComment" name="aComment" placeholder="Write a comment here..."></textarea>
+                        </div>
+                        <div class="col-sm-2 col-xs-1">
+                            <button type="submit" class="btn btn-info">Post<br>comment</button>
+                        </div>
+                    </div>
+                </form>
+            {{else}}
+                <h3>Please login to comment</h3>
+                <br>
+            {{/if}}
+        </div>
+
+        <div class="list-group">
+            {{#each getComments _id}}
+                <div href="#" class="list-group-item">
+                    <h4 class="list-group-item-heading">{{getUsername user}} <span style="font-size:x-small">({{commentDate date}})</span></h4>
+                    <p class="list-group-item-text">{{comment}}</p>
+                </div>
+            {{/each}}
+        </div>
+       
+    </div> <!-- container -->
+    
+</template>
+

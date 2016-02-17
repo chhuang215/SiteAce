@@ -1,0 +1,14 @@
+/* CSS declarations go here */
+.hidden_div{
+	display:none;
+}
+textarea{
+    resize:none;
+}
+#err{
+    color:red;
+}
+
+.timestamp p{
+    font-size:x-small;
+}
